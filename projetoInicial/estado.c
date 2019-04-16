@@ -58,12 +58,13 @@ ESTADO valida(ESTADO e,int l,int c) {
     int deixa = 0;
     int deixa1=0;
     int posc = 0;
+    // Este
     int i = l, j = c + 1;
-    while ((e.grelha[i][j] != e.peca) && (j <= 7)) { j++; }
+    while ((j <= 7)&&(e.grelha[i][j] != e.peca)) { j++; }
     posc = j;
-    if (e.grelha[i][j] == e.peca) {
+    if ((j <= 7)&&(e.grelha[i][j] == e.peca)) {
         j--;
-        while ((e.grelha[i][j] != e.peca) && (e.grelha[i][j] != VAZIA) && (j != c)) {
+        while (j != c){
             if ((e.grelha[i][j] != e.peca) && (e.grelha[i][j] != VAZIA)) deixa1 = 1;
             else deixa1 = 0;
             j--;
@@ -76,13 +77,14 @@ ESTADO valida(ESTADO e,int l,int c) {
             j++;
         }
     }
+    // Oeste
     int deixa2=0;
     i=l;j=c-1;
-    while ((e.grelha[i][j] != e.peca)&&(j>=0)){j--;}
+    while ((j>=0)&&(e.grelha[i][j] != e.peca)){j--;}
     posc=j;
-    if(e.grelha[i][j]==e.peca){
+    if((j>=0)&&(e.grelha[i][j]==e.peca)){
         j++;
-        while((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)&&(j!=c)){
+        while(j!=c){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa2=1;
             else deixa2=0;
             j++;
@@ -95,13 +97,14 @@ ESTADO valida(ESTADO e,int l,int c) {
             j--;
         }
     }
+    //Sul
     int deixa3=0;
     i=l+1;j=c;
-    while ((e.grelha[i][j] != e.peca)&&(i<=7)){i++;}
+    while ((i<=7)&&(e.grelha[i][j] != e.peca)){i++;}
     posc=i;
-    if(e.grelha[i][j]==e.peca){
+    if((i<=7)&&(e.grelha[i][j]==e.peca)){
         i--;
-        while((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)&&(i!=l)){
+        while(i!=l){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa3=1;
             else deixa3=0;
             i--;
@@ -114,13 +117,14 @@ ESTADO valida(ESTADO e,int l,int c) {
             i++;
         }
     }
+    //Norte
     int deixa4=0;
     i=l-1;j=c;
-    while ((e.grelha[i][j] != e.peca)&&(i>=0)){i--;}
+    while ((i>=0)&&(e.grelha[i][j] != e.peca)){i--;}
     posc=i;
-    if(e.grelha[i][j]==e.peca){
+    if((i>=0)&&(e.grelha[i][j]==e.peca)){
         i++;
-        while((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)&&(i!=l)){
+        while(i!=l){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa4=1;
             else deixa4=0;
             i++;
@@ -133,41 +137,40 @@ ESTADO valida(ESTADO e,int l,int c) {
             i--;
         }
     }
-    /*
     // SudEste
     int deixa5=0;
     i=l+1;j=c+1;
-    if(i <= 7 && j <= 7 && e.grelha[i][j] == inv[e.peca])
-    {
-        while (i <= 7 && j <= 7 && e.grelha[i][j] == inv[e.peca]) {
+    while ((i<=7)&&(j<=7)&&(e.grelha[i][j] != e.peca)){i++;j++;}
+    int posx=i;
+    int posy=j;
+    if((i<=7)&&(j<=7)&&(e.grelha[i][j]==e.peca)){
+        i--;
+        j--;
+        while((i!=l)&&(j!=c)){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa5=1;
+            else deixa5=0;
+            i--;
+            j--;
+        }
+    }
+    if (deixa5==1){
+        while ((i != posx)&&( j!= posy)){
+            if (e.peca==VALOR_O) e.grelha[i][j] = VALOR_O;
+            else if (e.peca==VALOR_X) e.grelha[i][j] = VALOR_X;
             i++;
             j++;
         }
-
-        //int posx=i;
-        //int posy=j;
-        if (i <= 7 && j <= 7 && e.grelha[i][j] == e.peca)
-        {
-            // inverter no tabuleiro
-            e.grelha[l][c] = e.peca; // jogar
-            int y = c + 1;
-            for (int x = l + 1; x < i; x++) {
-                e.grelha[x][y] = e.peca;
-                y++;
-            }
-        }
     }
-
     // NorOeste
     int deixa6=0;
     i=l-1;j=c-1;
-    while ((e.grelha[i][j] != e.peca)&&(i>=0)&&(j>=0)){i--;j--;}
+    while ((i>=0)&&(j>=0)&&(e.grelha[i][j] != e.peca)){i--;j--;}
     posx=i;
     posy=j;
-    if(e.grelha[i][j]==e.peca){
+    if((i>=0)&&(j>=0)&&(e.grelha[i][j]==e.peca)){
         i++;
         j++;
-        while((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)&&(i!=l)&&(j!=c)){
+        while((i!=l)&&(j!=c)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa6=1;
             else deixa6=0;
             i++;
@@ -181,10 +184,61 @@ ESTADO valida(ESTADO e,int l,int c) {
             i--;
             j--;
         }
-    } */
-
-    deixa = deixa1+deixa2+deixa3+deixa4;
-    if (deixa==0) printf("Jogada Invalida!");
+    }
+    //SudOeste
+    int deixa7=0;
+    i=l+1;j=c-1;
+    while ((i<=7)&&(j>=0)&&(e.grelha[i][j] != e.peca)){i++;j--;}
+    posx=i;
+    posy=j;
+    if((i<=7)&&(j>=0)&&(e.grelha[i][j]==e.peca)){
+        i--;
+        j++;
+        while((i!=l)&&(j!=c)){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa7=1;
+            else deixa7=0;
+            i--;
+            j++;
+        }
+    }
+    if (deixa7==1){
+        while ((i != posx)&&( j!= posy)){
+            if (e.peca==VALOR_O) e.grelha[i][j] = VALOR_O;
+            else if (e.peca==VALOR_X) e.grelha[i][j] = VALOR_X;
+            i++;
+            j--;
+        }
+    }
+    //NorEste
+    int deixa8=0;
+    i=l-1;j=c+1;
+    while ((i>=0)&&(j<=7)&&(e.grelha[i][j] != e.peca)){i--;j++;}
+    posx=i;
+    posy=j;
+    if((i>=0)&&(j<=7)&&(e.grelha[i][j]==e.peca)){
+        i++;
+        j--;
+        while((i!=l)&&(j!=c)){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa8=1;
+            else deixa8=0;
+            i++;
+            j--;
+        }
+    }
+    if (deixa8==1){
+        while ((i != posx)&&( j!= posy)){
+            if (e.peca==VALOR_O) e.grelha[i][j] = VALOR_O;
+            else if (e.peca==VALOR_X) e.grelha[i][j] = VALOR_X;
+            i--;
+            j++;
+        }
+    }
+    deixa = deixa1+deixa2+deixa3+deixa4+deixa5+deixa6+deixa7+deixa8;
+    if (deixa==0){
+        printf("Jogada Invalida!");
+        if(e.peca==VALOR_X) e.peca=VALOR_O;
+        else if(e.peca==VALOR_O) e.peca=VALOR_X;
+    }
     return e;
 }
 
@@ -201,7 +255,6 @@ ESTADO joga (ESTADO e, int x, int y) {
     }
     return e;
 }
-
 
 
 void undo (ESTADO e){}
