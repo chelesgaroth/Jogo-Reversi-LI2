@@ -1,7 +1,3 @@
-//
-// Created by raquelcosta on 29-03-2019.
-//
-
 #ifndef PROJETOINICIAL_ESTADO_H
 #define PROJETOINICIAL_ESTADO_H
 
@@ -32,7 +28,7 @@ ESTADO valida(ESTADO e,int l,int c);
 
 ESTADO joga (ESTADO e, int x, int y);
 void undo (ESTADO e);
-void load (ESTADO e);
+void load (ESTADO e,char c1);
 void save (ESTADO e,char c1);
 void sugestao (ESTADO e);
 void help (ESTADO e);
