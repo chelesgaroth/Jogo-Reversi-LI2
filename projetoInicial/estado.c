@@ -1,5 +1,5 @@
 //
-// Created by raquelcosta on 29-03-2019.
+// Created by edi8b on 16/04/2019.
 //
 
 #include <stdio.h>
@@ -44,7 +44,7 @@ ESTADO inicia (ESTADO e, VALOR v){
     int j=0;
     for(i=0;i <= 7;i++){
         for(j=0;j<=7;j++)
-        e.grelha[i][j]=VAZIA;
+            e.grelha[i][j]=VAZIA;
     }
     e.grelha[3][4] = VALOR_X;
     e.grelha[4][3] = VALOR_X;
@@ -258,20 +258,29 @@ ESTADO joga (ESTADO e, int x, int y) {
 
 
 void undo (ESTADO e){}
-void load (ESTADO e){}
+void load (ESTADO e,char c1){
+    fopen (&c1,"r");
+
+
+}
+
+//escreve o ficheiro da grelha
 void save (ESTADO e,char c1){
-    FILE *arq;
-   // char matriz[8][8];
-    //int i,j;
-    arq= fopen ("c1.txt","w");
-    /*for (j=0;j<8;j++){
+    int i,j;
+    char modo,jogador;
+    char matriz [8][8];
+    FILE *fPointer;
+    fPointer = fopen (&c1,"w");
+    modo= e.modo;
+    jogador= e.peca;
+    fprintf (fPointer,"%c %c",modo,jogador);
+    for (j=0;j<8;j++){
         for (i=0;i<8;i++) {
         matriz[i][j]= e.grelha[i][j];
-        fputc (matriz[i][j],arq);
+        fputc (matriz[i][j],fPointer);
         }
-    } */
-    fputs ("ola",arq);
-    fclose(arq);
+    }
+    fclose(fPointer);
 }
 
 void sugestao (ESTADO e){}
