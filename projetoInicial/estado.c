@@ -258,45 +258,367 @@ ESTADO joga (ESTADO e, int x, int y) {
 
 
 void undo (ESTADO e){}
-void load (ESTADO e,char c1){
-    fopen (&c1,"r");
 
+ESTADO load (ESTADO e,char c1[]) {
+    char c;
+    char linha[50];
+    char t1,t2;
+    int i = 0, j = 0;
+    FILE *tabuleiro;
+    tabuleiro = fopen(c1, "r");
+
+    // 1º linha
+    fscanf(tabuleiro,"%c %c",&t1,&t2);
+    e.modo = (t1 == 'M' ? 0 : 1);
+    e.peca = (t2 == 'X' ? VALOR_X : VALOR_O);
+    printf ("%c %c\n",t1, t2);
+
+    for (i=0;i<8;i++) {
+        for (j = 0; j < 8; j++) {
+
+            sscanf(linha, "%c ", &c);
+            switch (c) {
+                case 'X': {
+                    e.grelha[i][j] = VALOR_X;
+                    break;
+                }
+                case 'O': {
+                    e.grelha[i][j] = VALOR_O;
+                    break;
+                }
+
+                case '-': {
+                    e.grelha[i][j] = VAZIA;
+                    break;
+                }
+
+                default:{break;}
+            }
+        }
+    }
+    fclose(tabuleiro);
 
 }
 
+
 //escreve o ficheiro da grelha
-void save (ESTADO e,char c1){
+void save (ESTADO e,char c1[])
+{
     int i,j;
-    char modo,jogador;
-    char matriz [8][8];
+    char modo,jogador ;
+    char c = ' ';
     FILE *fPointer;
-    fPointer = fopen (&c1,"w");
-    modo= e.modo;
-    jogador= e.peca;
-    fprintf (fPointer,"%c %c",modo,jogador);
-    for (j=0;j<8;j++){
-        for (i=0;i<8;i++) {
-        matriz[i][j]= e.grelha[i][j];
-        fputc (matriz[i][j],fPointer);
-        }
+    fPointer = fopen(c1,"w");
+    modo= (e.modo == 0 ? 'M' : 'A');
+    jogador = (e.peca == VALOR_X ? 'X' : 'O');
+    fprintf (fPointer,"%c %c\n",modo,jogador);
+    for (i=0;i<8;i++) {
+       for (j=0;j<8;j++) {
+          switch(e.grelha[i][j]) {
+              case VALOR_X:
+                  {
+                  c = 'X';
+                  break;}
+              case VALOR_O:
+                  {
+                  c = 'O';
+                  break;}
+              case VAZIA:
+                  {
+                  c = '-';
+                  break;}
+          }
+           fprintf(fPointer,"%c ",c);
+       }
+       fprintf(fPointer,"\n");
     }
     fclose(fPointer);
 }
 
-void sugestao (ESTADO e){}
+
+
+int validar(ESTADO e,int l,int c) {
+    int deixa = 0;
+    int deixa1=0;
+    // Este
+    int i = l, j = c + 1;
+    while ((j <= 7)&&(e.grelha[i][j] != e.peca)) { j++; }
+    if ((j <= 7)&&(e.grelha[i][j] == e.peca)) {
+        j--;
+        while (j != c){
+            if ((e.grelha[i][j] != e.peca) && (e.grelha[i][j] != VAZIA)) deixa1 = 1;
+            else deixa1 = 0;
+            j--;
+        }
+    }
+
+    // Oeste
+    int deixa2=0;
+    i=l;j=c-1;
+    while ((j>=0)&&(e.grelha[i][j] != e.peca)){j--;}
+    if((j>=0)&&(e.grelha[i][j]==e.peca)){
+        j++;
+        while(j!=c){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa2=1;
+            else deixa2=0;
+            j++;
+        }
+    }
+
+    //Sul
+    int deixa3=0;
+    i=l+1;j=c;
+    while ((i<=7)&&(e.grelha[i][j] != e.peca)){i++;}
+    if((i<=7)&&(e.grelha[i][j]==e.peca)){
+        i--;
+        while(i!=l){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa3=1;
+            else deixa3=0;
+            i--;
+        }
+    }
+
+    //Norte
+    int deixa4=0;
+    i=l-1;j=c;
+    while ((i>=0)&&(e.grelha[i][j] != e.peca)){i--;}
+    if((i>=0)&&(e.grelha[i][j]==e.peca)){
+        i++;
+        while(i!=l){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa4=1;
+            else deixa4=0;
+            i++;
+        }
+    }
+
+    // SudEste
+    int deixa5=0;
+    i=l+1;j=c+1;
+    while ((i<=7)&&(j<=7)&&(e.grelha[i][j] != e.peca)){i++;j++;}
+    if((i<=7)&&(j<=7)&&(e.grelha[i][j]==e.peca)){
+        i--;
+        j--;
+        while((i!=l)&&(j!=c)){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa5=1;
+            else deixa5=0;
+            i--;
+            j--;
+        }
+    }
+
+    // NorOeste
+    int deixa6=0;
+    i=l-1;j=c-1;
+    while ((i>=0)&&(j>=0)&&(e.grelha[i][j] != e.peca)){i--;j--;}
+    if((i>=0)&&(j>=0)&&(e.grelha[i][j]==e.peca)){
+        i++;
+        j++;
+        while((i!=l)&&(j!=c)){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa6=1;
+            else deixa6=0;
+            i++;
+            j++;
+        }
+    }
+
+    //SudOeste
+    int deixa7=0;
+    i=l+1;j=c-1;
+    while ((i<=7)&&(j>=0)&&(e.grelha[i][j] != e.peca)){i++;j--;}
+    if((i<=7)&&(j>=0)&&(e.grelha[i][j]==e.peca)){
+        i--;
+        j++;
+        while((i!=l)&&(j!=c)){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa7=1;
+            else deixa7=0;
+            i--;
+            j++;
+        }
+    }
+    //NorEste
+    int deixa8=0;
+    i=l-1;j=c+1;
+    while ((i>=0)&&(j<=7)&&(e.grelha[i][j] != e.peca)){i--;j++;}
+    if((i>=0)&&(j<=7)&&(e.grelha[i][j]==e.peca)){
+        i++;
+        j--;
+        while((i!=l)&&(j!=c)){
+            if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa8=1;
+            else deixa8=0;
+            i++;
+            j--;
+        }
+    }
+    deixa = deixa1+deixa2+deixa3+deixa4+deixa5+deixa6+deixa7+deixa8;
+
+    return deixa;
+}
+void printarmos(ESTADO e){
+    char d = ' ';
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if ((e.grelha[i][j]== VAZIA) && (validar(e,i,j)!=0)) d= '*';
+            else if ((e.grelha[i][j]==VAZIA) && (validar(e,i,j)==0)) d='-';
+            else if (e.grelha[i][j]==VALOR_O) d = 'O';
+            else if(e.grelha[i][j]==VALOR_X) d ='X';
+
+            printf("%c ", d);
+        }
+        printf("\n");
+    }
+}
+
+
+ESTADO sugestao (ESTADO e){
+    if (e.peca == VALOR_O) printf("\nM O\n");
+    else if (e.peca == VALOR_X) printf("\nM X\n");
+    printarmos(e);
+    return e;
+}
 void help (ESTADO e) {}
 
 
 int menu () {
-    printf("Lista de comandos\n");
-    printf("N: Iniciar o jogo\n");
-    printf("J: Efetuar uma jogada\n");
-    printf("U: Desfazer jogada\n");
-    printf("L: Carregar jogo\n");
-    printf("E: Salvar jogo\n");
-    printf("S: Sugestão de jogada\n");
-    printf("H: Ajuda\n");
-    printf("A: Jogador vs Bot\n");
-    printf("Q: Sair do jogo\n");
-    printf("\nEscolha uma opção:");
+printf("Lista de comandos\n");
+printf("N: Iniciar o jogo\n");
+printf("J: Efetuar uma jogada\n");
+printf("U: Desfazer jogada\n");
+printf("L: Carregar jogo\n");
+printf("E: Salvar jogo\n");
+printf("S: Sugestão de jogada\n");
+printf("H: Ajuda\n");
+printf("A: Jogador vs Bot\n");
+printf("Q: Sair do jogo\n");
+printf("\nEscolha uma opção:");
 }
+
+int contador (ESTADO e) {
+    int x=0;
+    int o=0;
+    int soma=0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (e.grelha[i][j]==VALOR_X) {
+                x++;
+            }
+            else  if (e.grelha[i][j]==VALOR_O)
+                o++;
+        }
+        }
+    printf ("nº de X: %d ",x);
+    printf ("    nº de O: %d \n",o);
+    soma = x+o;
+    return soma;
+
+}
+
+int acabou (ESTADO e){
+    int final=0;
+    int validacao=0;
+    int i,j;
+    int contar;
+    int x=0;
+    int o=0;
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            if (e.grelha[i][j]==VALOR_X) {
+                x++;
+            }
+            else  if (e.grelha[i][j]==VALOR_O)
+                o++;
+        }
+    }
+    contar =x+o;
+
+    j=0;
+    i=0;
+    e.peca=VALOR_X;
+    while ((validar(e, i, j) == 0) && (i<8) && (j<8)) {
+        for (i = 0; i < 8; i++) {
+            for (j = 0; (j < 8); j++) {
+            }
+        }
+        validacao=0;
+    }
+    if(validar(e,i,j)!=0) validacao=1;
+    e.peca=VALOR_O;
+    while ((validacao==0)&&(validar(e, i, j) == 0) && (i<8) && (j<8)) {
+        for (i = 0; i < 8; i++) {
+            for (j = 0; (j < 8); j++) {
+            }
+        }
+        validacao=0;
+    }
+    if(validar(e,i,j)!=0) validacao=1;
+
+    if ((contar==64) || (validacao==0)) final=1;
+    else final=0;
+    return final;
+
+}
+
+ESTADO jogabot (ESTADO e, int x, int y) {
+    e = valida(e,x,y);
+    if (e.peca == VALOR_X) {
+        e.peca = VALOR_O;
+        printf("\nA O\n");
+    }
+    else if (e.peca == VALOR_O) {
+        e.peca = VALOR_X;
+        printf("\nA X\n");
+    }
+    return e;
+}
+
+ESTADO botfacil (ESTADO e)
+{   int i,j;
+    i=0;
+    j=0;
+    while (validar(e, i, j) == 0) {
+        for (i = 0; i < 8; i++) {
+            for (j = 0; (j < 8); j++) {
+            }
+        }
+    }
+    if (validar(e, i, j) != 0) jogabot(e, i, j);
+    printa(e);
+    jogadorfacil(e);
+    return e;
+
+}
+ESTADO jogadorfacil (ESTADO e) {
+    int x,y;
+    printf("Escolha a sua posição:\n");
+    scanf("%d %d", &x, &y);
+
+    joga(e, x, y);
+    printa(e);
+    botfacil (e);
+    return e;
+}
+
+
+ESTADO facil (ESTADO e,char c2) {
+    while (acabou(e) !=1) {
+        if (c2 == 'X') botfacil(e);
+        else jogadorfacil(e);
+    }
+    return e;
+}
+ESTADO medio (ESTADO e,char c2){
+    return e;
+}
+ESTADO dificil (ESTADO e,char c2){
+    return e;
+}
+
+ESTADO bot (ESTADO e,char c2,char c3) {
+    if (c3==1) facil(e,c2);
+    else if (c3==2) medio (e,c2);
+    else if (c3==3) dificil (e,c2);
+    return e;
+}
+
+
+
+
