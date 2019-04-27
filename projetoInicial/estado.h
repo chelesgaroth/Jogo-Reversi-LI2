@@ -28,10 +28,21 @@ ESTADO valida(ESTADO e,int l,int c);
 
 ESTADO joga (ESTADO e, int x, int y);
 void undo (ESTADO e);
-void load (ESTADO e,char c1);
-void save (ESTADO e,char c1);
-void sugestao (ESTADO e);
+ESTADO load (ESTADO ,char []);
+void save (ESTADO ,char []);
+int validar(ESTADO e,int l,int c);
+void printarmos(ESTADO e);
+ESTADO sugestao (ESTADO e);
 void help (ESTADO e);
+int contador (ESTADO e);
+ESTADO bot (ESTADO e, char c2,char c3);
+ESTADO facil (ESTADO e,char c3);
+ESTADO medio (ESTADO e,char c3);
+ESTADO dificil (ESTADO e,char c3);
+int acabou (ESTADO e);
+ESTADO jogabot (ESTADO e,int x, int y);
+ESTADO jogadorfacil (ESTADO e);
+ESTADO botfacil (ESTADO e);
 int menu ();
 
 
