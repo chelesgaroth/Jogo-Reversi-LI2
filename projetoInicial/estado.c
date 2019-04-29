@@ -64,7 +64,8 @@ ESTADO valida(ESTADO e,int l,int c) {
     posc = j;
     if ((j <= 7)&&(e.grelha[i][j] == e.peca)) {
         j--;
-        while (j != c){
+        deixa1=1;
+        while ((j != c)&&(deixa1==1)){
             if ((e.grelha[i][j] != e.peca) && (e.grelha[i][j] != VAZIA)) deixa1 = 1;
             else deixa1 = 0;
             j--;
@@ -84,7 +85,8 @@ ESTADO valida(ESTADO e,int l,int c) {
     posc=j;
     if((j>=0)&&(e.grelha[i][j]==e.peca)){
         j++;
-        while(j!=c){
+        deixa2=1;
+        while((j!=c)&&(deixa2==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa2=1;
             else deixa2=0;
             j++;
@@ -104,7 +106,8 @@ ESTADO valida(ESTADO e,int l,int c) {
     posc=i;
     if((i<=7)&&(e.grelha[i][j]==e.peca)){
         i--;
-        while(i!=l){
+        deixa3=1;
+        while((i!=l)&&(deixa3==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa3=1;
             else deixa3=0;
             i--;
@@ -124,7 +127,8 @@ ESTADO valida(ESTADO e,int l,int c) {
     posc=i;
     if((i>=0)&&(e.grelha[i][j]==e.peca)){
         i++;
-        while(i!=l){
+        deixa4=1;
+        while((i!=l)&&(deixa4==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa4=1;
             else deixa4=0;
             i++;
@@ -146,7 +150,8 @@ ESTADO valida(ESTADO e,int l,int c) {
     if((i<=7)&&(j<=7)&&(e.grelha[i][j]==e.peca)){
         i--;
         j--;
-        while((i!=l)&&(j!=c)){
+        deixa5=1;
+        while((i!=l)&&(j!=c)&&(deixa5==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa5=1;
             else deixa5=0;
             i--;
@@ -170,7 +175,8 @@ ESTADO valida(ESTADO e,int l,int c) {
     if((i>=0)&&(j>=0)&&(e.grelha[i][j]==e.peca)){
         i++;
         j++;
-        while((i!=l)&&(j!=c)){
+        deixa6=1;
+        while((i!=l)&&(j!=c)&&(deixa6==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa6=1;
             else deixa6=0;
             i++;
@@ -194,7 +200,8 @@ ESTADO valida(ESTADO e,int l,int c) {
     if((i<=7)&&(j>=0)&&(e.grelha[i][j]==e.peca)){
         i--;
         j++;
-        while((i!=l)&&(j!=c)){
+        deixa7=1;
+        while((i!=l)&&(j!=c)&&(deixa7==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa7=1;
             else deixa7=0;
             i--;
@@ -218,14 +225,15 @@ ESTADO valida(ESTADO e,int l,int c) {
     if((i>=0)&&(j<=7)&&(e.grelha[i][j]==e.peca)){
         i++;
         j--;
-        while((i!=l)&&(j!=c)){
+        deixa8=1;
+        while((i!=l)&&(j!=c)&&(deixa8==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa8=1;
             else deixa8=0;
             i++;
             j--;
         }
     }
-    if (deixa8==1){
+    if (deixa8==1){ //troca
         while ((i != posx)&&( j!= posy)){
             if (e.peca==VALOR_O) e.grelha[i][j] = VALOR_O;
             else if (e.peca==VALOR_X) e.grelha[i][j] = VALOR_X;
@@ -335,7 +343,7 @@ void save (ESTADO e,char c1[])
     fclose(fPointer);
 }
 
-
+// Esta função diz-nos se é possível jogar na posiçao linha l e coluna c ; >= 1 é possível ; =0 nao é possível ;
 
 int validar(ESTADO e,int l,int c) {
     int deixa = 0;
@@ -345,7 +353,8 @@ int validar(ESTADO e,int l,int c) {
     while ((j <= 7)&&(e.grelha[i][j] != e.peca)) { j++; }
     if ((j <= 7)&&(e.grelha[i][j] == e.peca)) {
         j--;
-        while (j != c){
+        deixa1=1;
+        while ((j != c)&&(deixa1==1)){
             if ((e.grelha[i][j] != e.peca) && (e.grelha[i][j] != VAZIA)) deixa1 = 1;
             else deixa1 = 0;
             j--;
@@ -358,7 +367,8 @@ int validar(ESTADO e,int l,int c) {
     while ((j>=0)&&(e.grelha[i][j] != e.peca)){j--;}
     if((j>=0)&&(e.grelha[i][j]==e.peca)){
         j++;
-        while(j!=c){
+        deixa2=1;
+        while((j!=c)&&(deixa2==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa2=1;
             else deixa2=0;
             j++;
@@ -371,7 +381,8 @@ int validar(ESTADO e,int l,int c) {
     while ((i<=7)&&(e.grelha[i][j] != e.peca)){i++;}
     if((i<=7)&&(e.grelha[i][j]==e.peca)){
         i--;
-        while(i!=l){
+        deixa3=1;
+        while((i!=l)&&(deixa3==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa3=1;
             else deixa3=0;
             i--;
@@ -384,7 +395,8 @@ int validar(ESTADO e,int l,int c) {
     while ((i>=0)&&(e.grelha[i][j] != e.peca)){i--;}
     if((i>=0)&&(e.grelha[i][j]==e.peca)){
         i++;
-        while(i!=l){
+        deixa4=1;
+        while((i!=l)&&(deixa4==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa4=1;
             else deixa4=0;
             i++;
@@ -398,7 +410,8 @@ int validar(ESTADO e,int l,int c) {
     if((i<=7)&&(j<=7)&&(e.grelha[i][j]==e.peca)){
         i--;
         j--;
-        while((i!=l)&&(j!=c)){
+        deixa5=1;
+        while((i!=l)&&(j!=c)&&(deixa5==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa5=1;
             else deixa5=0;
             i--;
@@ -413,7 +426,8 @@ int validar(ESTADO e,int l,int c) {
     if((i>=0)&&(j>=0)&&(e.grelha[i][j]==e.peca)){
         i++;
         j++;
-        while((i!=l)&&(j!=c)){
+        deixa6=1;
+        while((i!=l)&&(j!=c)&&(deixa6==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa6=1;
             else deixa6=0;
             i++;
@@ -428,7 +442,8 @@ int validar(ESTADO e,int l,int c) {
     if((i<=7)&&(j>=0)&&(e.grelha[i][j]==e.peca)){
         i--;
         j++;
-        while((i!=l)&&(j!=c)){
+        deixa7=1;
+        while((i!=l)&&(j!=c)&&(deixa7==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa7=1;
             else deixa7=0;
             i--;
@@ -442,7 +457,8 @@ int validar(ESTADO e,int l,int c) {
     if((i>=0)&&(j<=7)&&(e.grelha[i][j]==e.peca)){
         i++;
         j--;
-        while((i!=l)&&(j!=c)){
+        deixa8=1;
+        while((i!=l)&&(j!=c)&&(deixa8==1)){
             if ((e.grelha[i][j] != e.peca)&&(e.grelha[i][j] != VAZIA)) deixa8=1;
             else deixa8=0;
             i++;
@@ -453,6 +469,9 @@ int validar(ESTADO e,int l,int c) {
 
     return deixa;
 }
+
+// printar todas a jogadas possíveis para o jogador em jogo
+
 void printarmos(ESTADO e){
     char d = ' ';
     for (int i = 0; i < 8; i++) {
@@ -505,8 +524,8 @@ int contador (ESTADO e) {
                 o++;
         }
         }
-    printf ("nº de X: %d ",x);
-    printf ("    nº de O: %d \n",o);
+    printf ("X:%d     ",x);
+    printf ("    O:%d \n",o);
     soma = x+o;
     return soma;
 
@@ -542,6 +561,8 @@ int acabou (ESTADO e){
     }
     if(validar(e,i,j)!=0) validacao=1;
     e.peca=VALOR_O;
+    i=0;
+    j=0;
     while ((validacao==0)&&(validar(e, i, j) == 0) && (i<8) && (j<8)) {
         for (i = 0; i < 8; i++) {
             for (j = 0; (j < 8); j++) {
@@ -557,6 +578,16 @@ int acabou (ESTADO e){
 
 }
 
+ESTADO jogadorfacil (ESTADO e) {
+    int x,y;
+    printf("Escolha a sua posição:\n");
+    scanf("%d %d", &x, &y);
+
+    joga(e, x-1, y-1);
+    printa(e);
+    return e;
+}
+
 ESTADO jogabot (ESTADO e, int x, int y) {
     e = valida(e,x,y);
     if (e.peca == VALOR_X) {
@@ -570,52 +601,45 @@ ESTADO jogabot (ESTADO e, int x, int y) {
     return e;
 }
 
-ESTADO botfacil (ESTADO e)
-{   int i,j;
+ESTADO botfacil (ESTADO e) {
+    int i,j;
     i=0;
-    j=0;
-    while (validar(e, i, j) == 0) {
-        for (i = 0; i < 8; i++) {
-            for (j = 0; (j < 8); j++) {
-            }
+    int jogabot=0;
+    while ((i<8)&&(jogabot==0)){
+        j=0;
+        while ((j<8)&&(jogabot==0)){
+            j++;
+            jogabot=jogabot+validar(e,i,j);
         }
+        i++;
     }
-    if (validar(e, i, j) != 0) jogabot(e, i, j);
-    printa(e);
-    jogadorfacil(e);
-    return e;
+    i= 4;
+    j= 3;
+    if (jogabot != 0)  e=joga(e,i-1,j-1);
+    else printf("Sem Jogadas\n");
 
-}
-ESTADO jogadorfacil (ESTADO e) {
-    int x,y;
-    printf("Escolha a sua posição:\n");
-    scanf("%d %d", &x, &y);
-
-    joga(e, x, y);
-    printa(e);
-    botfacil (e);
     return e;
 }
 
 
-ESTADO facil (ESTADO e,char c2) {
-    while (acabou(e) !=1) {
-        if (c2 == 'X') botfacil(e);
-        else jogadorfacil(e);
-    }
+ESTADO facil (ESTADO e) {
+    if (e.peca==VALOR_X) botfacil(e);
+    else if (e.peca==VALOR_O) jogadorfacil(e);
+
     return e;
 }
-ESTADO medio (ESTADO e,char c2){
+ESTADO medio (ESTADO e){
     return e;
 }
-ESTADO dificil (ESTADO e,char c2){
+ESTADO dificil (ESTADO e){
     return e;
 }
 
-ESTADO bot (ESTADO e,char c2,char c3) {
-    if (c3==1) facil(e,c2);
-    else if (c3==2) medio (e,c2);
-    else if (c3==3) dificil (e,c2);
+ESTADO bot (ESTADO e, int c3) {
+    if (c3==1) facil(e);
+    else if (c3==2) medio(e);
+    else if (c3==3) dificil(e);
+    else printf("Nível Inválido");
     return e;
 }
 
