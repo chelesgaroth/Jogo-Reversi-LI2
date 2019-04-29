@@ -6,13 +6,11 @@
 
 
 
-void comandos ()
-{
+void comandos () {
     ESTADO e = {0};
     char linha[50];
     char c1,c2,nome[40];
     int x,y,c3;
-    int escolha=0;
     do{fgets(linha,50,stdin);
         switch (toupper(linha [0])){
             case 'N': {
@@ -31,22 +29,23 @@ void comandos ()
                 break;
             }
             case 'J' : {
-                sscanf(linha," %c %d %d", &c1 ,&x ,&y);
+                sscanf(linha,"%c %d %d", &c1 ,&x ,&y);
                 e = joga (e,x-1,y-1);
                 printa(e);
                 contador (e);
                 break;
             }
             case 'Q' : break;
-            case 'U': undo(e);
-            contador (e);
+            case 'U': {
+                undo(e);
+                contador (e);
+            }
             case 'L': {
                 sscanf (linha,"%c %s", &c1,nome);
                 e=load(e,nome);
                 printa(e);
                 contador(e);
                 break;
-
             }
 
             case 'E': {
@@ -60,11 +59,17 @@ void comandos ()
                 contador (e);
                 break;
             }
-            case 'H': help(e);
-            contador (e);
+            case 'H':{
+                help(e);
+                contador (e);
+            }
             case 'A': {
-                sscanf (linha, "%c %c %d", &c1, &c2, &c3);
-                e=bot (e,c1,c2);
+                sscanf(linha,"%c %c %d", &c1 ,&c2 ,&c3);
+                if (c2=='X') e.peca=VALOR_X;
+                else if (c2=='O') e.peca=VALOR_O;
+                else printf("Jogador Inválido");
+                e = bot(e,c3);
+                printa(e);
                 break;
             }
 
