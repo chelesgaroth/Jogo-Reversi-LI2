@@ -1,0 +1,66 @@
+            case 'J' : {
+                    sscanf(linha, " %c %d %d", &c1, &x, &y);
+                    e = joga(e, x - 1, y - 1);
+                    printa(e);
+                    contador(e);
+                    avaliaTab(e);
+                    if (acabou (e)==1) {
+                        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
+                        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
+                        else printf ("Empate!");
+
+                    }
+int acabou (ESTADO e){
+    int final=0;
+    int validacao=0;
+    int i,j;
+    int contar;
+    contar=contadorO(e)+contadorX(e);
+    e.peca=VALOR_X;
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            if (validar(e, i, j) != 0) {
+                validacao = 1;
+            }
+        }
+    }
+    e.peca=VALOR_O;
+    if (validacao!=1) {
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+                if (validar(e, i, j) != 0) {
+                    validacao = 1;
+                }
+            }
+        }
+    }
+    if ((contar==64) || (validacao==0)) final=1;
+    else final=0;
+    return final;
+}
+
+int contadorX (ESTADO e) {
+    int x=0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (e.grelha[i][j]==VALOR_X) {
+                x++;
+            }
+        }
+    }
+    return x;
+
+}
+
+int contadorO (ESTADO e) {
+    int x=0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (e.grelha[i][j]==VALOR_O) {
+                x++;
+            }
+        }
+    }
+    return x;
+
+}
