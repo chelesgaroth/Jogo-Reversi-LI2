@@ -39,6 +39,80 @@ int acabou (ESTADO e){
     return final;
 }
 
+int avaliaTab (ESTADO e) {
+    int i = 0;
+    if (e.grelha[0][0] == VAZIA) i +=99;
+    if (e.grelha[0][1] == VAZIA) i +=-8;
+    if (e.grelha[0][2] == VAZIA) i += 8;
+    if (e.grelha[0][3] == VAZIA) i += 6;
+    if (e.grelha[0][4] == VAZIA) i += 6;
+    if (e.grelha[0][5] == VAZIA) i += 8;
+    if (e.grelha[0][6] == VAZIA) i +=-8;
+    if (e.grelha[0][7] == VAZIA) i +=99;
+    if (e.grelha[1][0] == VAZIA) i +=-8;
+    if (e.grelha[1][1] == VAZIA) i +=-24;
+    if (e.grelha[1][2] == VAZIA) i +=-4;
+    if (e.grelha[1][3] == VAZIA) i +=-3;
+    if (e.grelha[1][4] == VAZIA) i +=-3;
+    if (e.grelha[1][5] == VAZIA) i +=-4;
+    if (e.grelha[1][6] == VAZIA) i +=-24;
+    if (e.grelha[1][7] == VAZIA) i +=-8;
+    if (e.grelha[2][0] == VAZIA) i += 8;
+    if (e.grelha[2][1] == VAZIA) i +=-4;
+    if (e.grelha[2][2] == VAZIA) i += 7;
+    if (e.grelha[2][3] == VAZIA) i += 4;
+    if (e.grelha[2][4] == VAZIA) i += 4;
+    if (e.grelha[2][5] == VAZIA) i += 7;
+    if (e.grelha[2][6] == VAZIA) i +=-4;
+    if (e.grelha[2][7] == VAZIA) i +=-8;
+    if (e.grelha[3][0] == VAZIA) i += 6;
+    if (e.grelha[3][1] == VAZIA) i +=-3;
+    if (e.grelha[3][2] == VAZIA) i += 4;
+    if (e.grelha[3][3] == VAZIA) i += 0;
+    if (e.grelha[3][4] == VAZIA) i += 0;
+    if (e.grelha[3][5] == VAZIA) i += 4;
+    if (e.grelha[3][6] == VAZIA) i +=-3;
+    if (e.grelha[3][7] == VAZIA) i += 6;
+    if (e.grelha[4][0] == VAZIA) i += 6;
+    if (e.grelha[4][1] == VAZIA) i +=-3;
+    if (e.grelha[4][2] == VAZIA) i += 4;
+    if (e.grelha[4][3] == VAZIA) i += 0;
+    if (e.grelha[4][4] == VAZIA) i += 0;
+    if (e.grelha[4][5] == VAZIA) i += 4;
+    if (e.grelha[4][6] == VAZIA) i +=-3;
+    if (e.grelha[4][7] == VAZIA) i += 6;
+    if (e.grelha[5][0] == VAZIA) i += 8;
+    if (e.grelha[5][1] == VAZIA) i +=-4;
+    if (e.grelha[5][2] == VAZIA) i += 7;
+    if (e.grelha[5][3] == VAZIA) i += 4;
+    if (e.grelha[5][4] == VAZIA) i += 4;
+    if (e.grelha[5][5] == VAZIA) i += 7;
+    if (e.grelha[5][6] == VAZIA) i +=-4;
+    if (e.grelha[5][7] == VAZIA) i +=-8;
+    if (e.grelha[6][0] == VAZIA) i +=-8;
+    if (e.grelha[6][1] == VAZIA) i +=-24;
+    if (e.grelha[6][2] == VAZIA) i +=-4;
+    if (e.grelha[6][3] == VAZIA) i +=-3;
+    if (e.grelha[6][4] == VAZIA) i +=-3;
+    if (e.grelha[6][5] == VAZIA) i +=-4;
+    if (e.grelha[6][6] == VAZIA) i +=-24;
+    if (e.grelha[6][7] == VAZIA) i +=-8;
+    if (e.grelha[7][0] == VAZIA) i +=99;
+    if (e.grelha[7][1] == VAZIA) i +=-8;
+    if (e.grelha[7][2] == VAZIA) i += 8;
+    if (e.grelha[7][3] == VAZIA) i += 6;
+    if (e.grelha[7][4] == VAZIA) i += 6;
+    if (e.grelha[7][5] == VAZIA) i += 8;
+    if (e.grelha[7][6] == VAZIA) i +=-8;
+    if (e.grelha[7][7] == VAZIA) i +=99;
+    printf ("%d\n",i);
+    return i;
+}
+
+
+
+
+
 int contadorX (ESTADO e) {
     int x=0;
     for (int i = 0; i < 8; i++) {
