@@ -14,6 +14,7 @@ void comandos () {
     do{fgets(linha,50,stdin);
         switch (toupper(linha [0])){
             case 'N': {
+                e.modo=0;
                 sscanf(linha, "%c %c",&c1,&c2);
                 if (c2=='X'){
                     printf("M X\n");
@@ -30,12 +31,40 @@ void comandos () {
             }
             case 'J' : {
                 sscanf(linha,"%c %d %d", &c1 ,&x ,&y);
-                e = joga (e,x-1,y-1);
-                printa(e);
-                contador (e);
+                if (e.modo==0)
+                {
+
+                    e = joga (e,x-1,y-1);
+                    printa(e);
+                    contador (e);
+                }
+                else
+                {
+                    if (e.peca==VALOR_X) e.peca=VALOR_O;
+                    else if(e.peca==VALOR_O) e.peca=VALOR_X;
+
+                    if (validar(e,x-1,y-1)!=0)
+                    {
+                        printf(" %c ",e.peca == VALOR_X ? 'X' : 'O');
+                        e = joga (e,x-1,y-1);
+                        printa(e);
+                        contador (e);
+                        e=botfacil(e);
+                    }
+                    else
+                    {
+                        if (e.peca==VALOR_X) printf("Try again X\n");
+                        else if (e.peca==VALOR_O) printf("Try again O\n");
+                        if (e.peca==VALOR_X) e.peca=VALOR_O;
+                        else if(e.peca==VALOR_O) e.peca=VALOR_X;
+
+
+                    }
+                }
                 break;
             }
-            case 'Q' : break;
+            case 'Q' :
+                break;
             case 'U': {
                 undo(e);
                 contador (e);
@@ -64,12 +93,14 @@ void comandos () {
                 contador (e);
             }
             case 'A': {
+                e.modo=1;
                 sscanf(linha,"%c %c %d", &c1 ,&c2 ,&c3);
-                if (c2=='X') e.peca=VALOR_X;
-                else if (c2=='O') e.peca=VALOR_O;
-                else printf("Jogador Inválido");
-                e = bot(e,c3);
-                printa(e);
+                if ((c2=='X') || (c2=='O')) {
+                    e.peca=VALOR_X;
+                    e = bot(e,c2,c3);
+                }
+                else printf("Jogador Inválido\n");
+
                 break;
             }
 
