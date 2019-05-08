@@ -297,6 +297,10 @@ ESTADO valida(ESTADO e,int l,int c) {
 
     if (deixa==0){
         printf("Jogada Invalida!");
+        if(e.modo==0) {
+            if (e.peca==VALOR_X)e.peca=VALOR_O;
+            else if(e.peca==VALOR_O) e.peca=VALOR_X;
+        }
     }
     return e;
 }
@@ -318,7 +322,7 @@ ESTADO joga (ESTADO e, int x, int y) {
         }
     }
     else if (e.modo==1){
-       
+
         e=valida(e,x ,y);
         if (e.peca == VALOR_X) {
             e.peca = VALOR_O;
