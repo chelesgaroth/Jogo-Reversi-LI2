@@ -2,10 +2,6 @@
 #include <ctype.h>
 #include "estado.h"
 
-
-
-
-
 void comandos () {
     ESTADO e = {0};
     char linha[50];
@@ -30,6 +26,7 @@ void comandos () {
                 break;
             }
             case 'J' : {
+                // permite efetuar uma jogada tanto em modo 1 ou 0;
                 sscanf(linha,"%c %d %d", &c1 ,&x ,&y);
                 if (e.modo==0)
                 {
@@ -40,23 +37,23 @@ void comandos () {
                 }
                 else
                 {
-                    if (e.peca==VALOR_X) e.peca=VALOR_O;
-                    else if(e.peca==VALOR_O) e.peca=VALOR_X;
-
+                    // se for "permitido" jogar naquela posição, irá jogar, printar o tabuleiro e passar a jogada ao bot
                     if (validar(e,x-1,y-1)!=0)
                     {
-                        printf(" %c ",e.peca == VALOR_X ? 'X' : 'O');
+                        printf(" comando %c ",e.peca == VALOR_X ? 'X' : 'O');
                         e = joga (e,x-1,y-1);
                         printa(e);
                         contador (e);
                         e=botfacil(e);
                     }
                     else
-                    {
+                    {  // se nao for "permitido" jogar, imprime no ecrã uma mensagem para o jogador voltar a jogar: NÃO VAI À
+                        // FUNÇÂO JOGA
+                        printf("nao validou %c ",e.peca == VALOR_X ? 'X' : 'O');
+                        jogadorfacil(e);
+
                         if (e.peca==VALOR_X) printf("Try again X\n");
                         else if (e.peca==VALOR_O) printf("Try again O\n");
-                        if (e.peca==VALOR_X) e.peca=VALOR_O;
-                        else if(e.peca==VALOR_O) e.peca=VALOR_X;
 
 
                     }
@@ -93,14 +90,17 @@ void comandos () {
                 contador (e);
             }
             case 'A': {
+                // A peça que inicia é a X.
+                // Vai à função bot para distribuir pelos diversos níveis
+                printf("no comando A sou o %c\n ",e.peca == VALOR_X ? 'X' : 'O');
                 e.modo=1;
                 sscanf(linha,"%c %c %d", &c1 ,&c2 ,&c3);
                 if ((c2=='X') || (c2=='O')) {
-                    e.peca=VALOR_X;
                     e = bot(e,c2,c3);
                 }
-                else printf("Jogador Inválido\n");
 
+                else printf("Jogador Inválido\n");
+                printf(" no final do comando A sou %c \n",e.peca == VALOR_X ? 'X' : 'O');
                 break;
             }
 
@@ -108,10 +108,10 @@ void comandos () {
             default: {
                 printf("Comando Inválido!\n");
                 break;
-                }
             }
-
         }
+
+    }
 
     while ((toupper(linha[0]) != 'Q'));
 }
@@ -128,4 +128,5 @@ int main()
 
     comandos();
     return 0;
+}
 }
