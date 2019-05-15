@@ -2,16 +2,19 @@
 #include "estado.h"
 #include <ctype.h>
 #include <stdlib.h>
-
+#include <malloc.h>
 
 const VALOR inv[] = {VAZIA,VALOR_O,VALOR_X};
 
 void printa(ESTADO e)
 {
     char c = ' ';
+    printf("\n  1 2 3 4 5 6 7 8\n");
+    int linhas=1;
 
 
     for (int i = 0; i < 8; i++) {
+        printf("%d ",linhas);
         for (int j = 0; j < 8; j++) {
             switch (e.grelha[i][j]) {
                 case VALOR_O: {
@@ -28,8 +31,9 @@ void printa(ESTADO e)
                 }
             }
             printf("%c ", c);
-
         }
+        linhas++;
+
         printf("\n");
     }
 
@@ -321,23 +325,26 @@ ESTADO joga (ESTADO e, int x, int y) {
             printf("\nM X\n");
         }
     }
-    else if (e.modo==1){
+    else if (e.modo!=0){
 
         e=valida(e,x ,y);
         if (e.peca == VALOR_X) {
             e.peca = VALOR_O;
-            printf("\nA O\n");
+            if(e.modo==1) printf("\nA O 1\n");
+            else if(e.modo==2) printf("\nA O 2\n");
+            else if(e.modo==3) printf("\nA O 3\n");
         }
         else if (e.peca == VALOR_O) {
             e.peca = VALOR_X;
-            printf("\nA X\n");
+            if(e.modo==1) printf("\nA X 1\n");
+            else if(e.modo==2) printf("\nA X 2\n");
+            else if(e.modo==3) printf("\nA X 3\n");
         }
 
     }
     return e;
 }
 
-void undo (ESTADO e){}
 
 
 ESTADO anula (ESTADO e){
@@ -354,7 +361,7 @@ ESTADO anula (ESTADO e){
 ESTADO load (ESTADO e,char c1[]) {
     char c;
     char linha[50];
-    char t1,t2;
+    char t1,t2,t3;
     int i = 0, j = 0;
     FILE *tabuleiro;
 
@@ -363,13 +370,16 @@ ESTADO load (ESTADO e,char c1[]) {
 
 
     // 1º linha
-    fscanf(tabuleiro,"%c %c",&t1,&t2);
-    e.modo = (t1 == 'M' ? 0 : 1);
+    fscanf(tabuleiro,"%c %c %c",&t1,&t2,&t3);
+    if (t1=='M') e.modo=0;
+    else if(t3=='1') e.modo=1;
+    else if(t3=='2') e.modo=2;
+    else if(t3=='3') e.modo=3;
     e.peca = (t2 == 'X' ? VALOR_X : VALOR_O);
     printf ("%c %c\n",t1, t2);
 
     for (i=0;i<8;i++) {
-        for (j = 0; j < 8; j++) {
+        for (j = 1; j < 9; j++) {
 
             fscanf(tabuleiro, "%s ", &c);
             switch (c) {
@@ -433,6 +443,7 @@ void save (ESTADO e,char c1[])
 // Esta função diz-nos se é possível jogar na posiçao linha l e coluna c ; >= 1 é possível ; =0 nao é possível ;
 
 int validar(ESTADO e,int l,int c) {
+    int numero=0;
     int deixa = 0;
     if(e.grelha[l][c]== VAZIA) {
         int deixa1 = 0;
@@ -609,7 +620,10 @@ int validar(ESTADO e,int l,int c) {
 
 void printarmos(ESTADO e){
     char d = ' ';
+    printf("\n  1 2 3 4 5 6 7 8\n");
+    int linhas=1;
     for (int i = 0; i < 8; i++) {
+        printf("%d ",linhas);
         for (int j = 0; j < 8; j++) {
             if ((e.grelha[i][j]== VAZIA) && (validar(e,i,j)!=0)) d= '*';
             else if ((e.grelha[i][j]==VAZIA) && (validar(e,i,j)==0)) d='-';
@@ -618,14 +632,30 @@ void printarmos(ESTADO e){
 
             printf("%c ", d);
         }
+        linhas++;
         printf("\n");
     }
 }
 
 
 ESTADO sugestao (ESTADO e){
+    if(e.modo==0){
     if (e.peca == VALOR_O) printf("\nM O\n");
     else if (e.peca == VALOR_X) printf("\nM X\n");
+    }
+    else if (e.modo!=0){
+        if (e.peca == VALOR_X) {
+            if(e.modo==1) printf("\nA X 1\n");
+            else if(e.modo==2) printf("\nA X 2\n");
+            else if(e.modo==3) printf("\nA X 3\n");
+        }
+        else if (e.peca == VALOR_O) {
+            if(e.modo==1) printf("\nA O 1\n");
+            else if(e.modo==2) printf("\nA O 2\n");
+            else if(e.modo==3) printf("\nA O 3\n");
+        }
+
+    }
     printarmos(e);
     return e;
 }
@@ -659,11 +689,24 @@ int contador (ESTADO e) {
                 o++;
         }
     }
-    printf ("X:%d     ",x);
-    printf ("    O:%d \n",o);
+    printf ("    \nX:%d     ",x);
+    printf ("      O:%d \n",o);
     soma = x+o;
     return soma;
 
+}
+int passar (ESTADO e) {
+    int validacao=0;
+    int i,j;
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            if (validar(e, i, j) != 0) {
+                validacao++;
+
+            }
+        }
+    }
+    return validacao; // 0 nao tem jogadas
 }
 
 int acabou (ESTADO e){
@@ -671,56 +714,37 @@ int acabou (ESTADO e){
     int validacao=0;
     int i,j;
     int contar;
-    int x=0;
-    int o=0;
+    contar=contadorO(e)+contadorX(e);
+    e.peca=VALOR_X;
     for (i = 0; i < 8; i++) {
         for (j = 0; j < 8; j++) {
-            if (e.grelha[i][j]==VALOR_X) {
-                x++;
-            }
-            else  if (e.grelha[i][j]==VALOR_O)
-                o++;
-        }
-    }
-    contar =x+o;
-
-    j=0;
-    i=0;
-    e.peca=VALOR_X;
-    while ((validar(e, i, j) == 0) && (i<8) && (j<8)) {
-        for (i = 0; i < 8; i++) {
-            for (j = 0; (j < 8); j++) {
+            if (validar(e, i, j) != 0) {
+                validacao = 1;
             }
         }
-        validacao=0;
     }
-    if(validar(e,i,j)!=0) validacao=1;
     e.peca=VALOR_O;
-    i=0;
-    j=0;
-    while ((validacao==0)&&(validar(e, i, j) == 0) && (i<8) && (j<8)) {
+    if (validacao!=1) {
         for (i = 0; i < 8; i++) {
-            for (j = 0; (j < 8); j++) {
+            for (j = 0; j < 8; j++) {
+                if (validar(e, i, j) != 0) {
+                    validacao = 1;
+                }
             }
         }
-        validacao=0;
     }
-    if(validar(e,i,j)!=0) validacao=1;
-
     if ((contar==64) || (validacao==0)) final=1;
     else final=0;
     return final;
-
 }
 
 // final=0 o jogo ainda nao acabou
 
 
-ESTADO jogadorfacil (ESTADO e) {
+ESTADO jogador(ESTADO e) {
     // com recurso aos comandos, esra função apenas permite alerta ao jogador para efetuar a sua jogada
     // através do comando J
 
-    e.modo=1;
     printf("Efetue a sua jogada, através do comando J\n");
 
     return e;
@@ -730,21 +754,30 @@ ESTADO jogadorfacil (ESTADO e) {
 ESTADO botfacil (ESTADO e) {
     // Função onde o bot joga, estratégia: percorre todos as posições, a primeira onde for valido jogar, efetua a jogada
     // e sai do ciclo, ou seja, passa a vez ao jogador;
+    if (passar(e)!=0) {
 
-    int i,j;
-    for(i=0;i<8;i++){
-        for(j=0;j<8;j++){
-            if (validar(e,i,j)!= 0) {
-                e=joga(e,i,j);
-                printa(e);
-                i=8; j=8;
+        int i, j;
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+                if (validar(e, i, j) != 0) {
+                    e = joga(e, i, j);
+                    printa(e);
+                    contador(e);
+                    printf("\n\nO Bot jogou na posicao %d %d\n", i + 1, j + 1);
+                    i = 8;
+                    j = 8;
 
 
+                }
             }
         }
+        e = jogador(e);
     }
-    contador(e);
-    e=jogadorfacil(e);
+    else {
+        printf("Sem Jogadas.Passou a vez.");
+        e.peca=inv[e.peca];
+        jogador(e);
+    }
 
     return e;
 }
@@ -756,26 +789,294 @@ ESTADO facil (ESTADO e, char c2) {
     // já selecionado o nível, dependendo da peça que a pessoa selecionou para o bot, começa o jogo pelo jogador ou pelo bot
     // se selecionou X entao o bot começa, caso contrário sera o jogador
     if (c2=='X') e=botfacil(e);
-    else if (c2=='O') e=jogadorfacil(e);
+    else if (c2=='O') e=jogador(e);
     return e;
 }
 
+int contadorX (ESTADO e) {
+    int x=0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (e.grelha[i][j]==VALOR_X) {
+                x++;
+            }
+        }
+    }
+    return x;
+
+}
+
+int contadorO (ESTADO e) {
+    int x=0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (e.grelha[i][j]==VALOR_O) {
+                x++;
+            }
+        }
+    }
+    return x;
+
+}
+
+/*int maispecas (ESTADO e) {
+    ESTADO f;
+    int i,j;
+    int curr=0, max=0;
+
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            if (validar(e, i, j) != 0) {
+                f=valida(e,i,j);
+                if (e.peca==VALOR_X)
+                    curr= contadorX(f)-contadorX(e)-1;
+                if (e.peca==VALOR_O)
+                    curr= contadorO(f)-contadorO(e)-1;
+                if (curr>max) max=curr;
+            }
+        }
+    }
+    printf("%d",max);
+    return max;
+}
+*/
+
+ESTADO botmedio (ESTADO e) {
+    if (acabou (e)==1) {
+        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
+        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
+        else printf ("Empate!");
+        return e;
+    }
+    if (passar(e)!=0) {
+        ESTADO f;
+        int i, j, a = 0, b = 0;
+        int curr = 0, max = 0;
+
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+                if (validar(e, i, j) != 0) {
+                    f = valida(e, i, j);
+                    if (e.peca == VALOR_X)
+                        curr = contadorX(f) - contadorX(e) - 1;
+                    if (e.peca == VALOR_O)
+                        curr = contadorO(f) - contadorO(e) - 1;
+                    if (curr > max) {
+                        max = curr;
+                        a = i;
+                        b = j;
+                    }
+                }
+            }
+        }
+        e = joga(e, a, b);
+        printa(e);
+        contador(e);
+        printf("\n\nO Bot jogou na posicao %d %d\n", a + 1, b + 1);
+        e = jogador(e);
+    }
+    else if ((passar(e)==0)&& (acabou!=1)){
+        printf("Sem Jogadas.Passou a vez.");
+        e.peca=inv[e.peca];
+        jogador(e);
+    }
+    return e;
+}
+
+
 ESTADO medio (ESTADO e, char c2){
+    if (c2=='X') e=botmedio(e);
+    if (c2=='O') e=jogador(e);
     return e;
 }
+
+int avaliaTab (ESTADO e) {
+    int i = 0;
+    if (e.grelha[0][0] == VAZIA) i +=99;
+    if (e.grelha[0][1] == VAZIA) i +=-8;
+    if (e.grelha[0][2] == VAZIA) i += 8;
+    if (e.grelha[0][3] == VAZIA) i += 6;
+    if (e.grelha[0][4] == VAZIA) i += 6;
+    if (e.grelha[0][5] == VAZIA) i += 8;
+    if (e.grelha[0][6] == VAZIA) i +=-8;
+    if (e.grelha[0][7] == VAZIA) i +=99;
+    if (e.grelha[1][0] == VAZIA) i +=-8;
+    if (e.grelha[1][1] == VAZIA) i +=-24;
+    if (e.grelha[1][2] == VAZIA) i +=-4;
+    if (e.grelha[1][3] == VAZIA) i +=-3;
+    if (e.grelha[1][4] == VAZIA) i +=-3;
+    if (e.grelha[1][5] == VAZIA) i +=-4;
+    if (e.grelha[1][6] == VAZIA) i +=-24;
+    if (e.grelha[1][7] == VAZIA) i +=-8;
+    if (e.grelha[2][0] == VAZIA) i += 8;
+    if (e.grelha[2][1] == VAZIA) i +=-4;
+    if (e.grelha[2][2] == VAZIA) i += 7;
+    if (e.grelha[2][3] == VAZIA) i += 4;
+    if (e.grelha[2][4] == VAZIA) i += 4;
+    if (e.grelha[2][5] == VAZIA) i += 7;
+    if (e.grelha[2][6] == VAZIA) i +=-4;
+    if (e.grelha[2][7] == VAZIA) i +=-8;
+    if (e.grelha[3][0] == VAZIA) i += 6;
+    if (e.grelha[3][1] == VAZIA) i +=-3;
+    if (e.grelha[3][2] == VAZIA) i += 4;
+    if (e.grelha[3][3] == VAZIA) i += 0;
+    if (e.grelha[3][4] == VAZIA) i += 0;
+    if (e.grelha[3][5] == VAZIA) i += 4;
+    if (e.grelha[3][6] == VAZIA) i +=-3;
+    if (e.grelha[3][7] == VAZIA) i += 6;
+    if (e.grelha[4][0] == VAZIA) i += 6;
+    if (e.grelha[4][1] == VAZIA) i +=-3;
+    if (e.grelha[4][2] == VAZIA) i += 4;
+    if (e.grelha[4][3] == VAZIA) i += 0;
+    if (e.grelha[4][4] == VAZIA) i += 0;
+    if (e.grelha[4][5] == VAZIA) i += 4;
+    if (e.grelha[4][6] == VAZIA) i +=-3;
+    if (e.grelha[4][7] == VAZIA) i += 6;
+    if (e.grelha[5][0] == VAZIA) i += 8;
+    if (e.grelha[5][1] == VAZIA) i +=-4;
+    if (e.grelha[5][2] == VAZIA) i += 7;
+    if (e.grelha[5][3] == VAZIA) i += 4;
+    if (e.grelha[5][4] == VAZIA) i += 4;
+    if (e.grelha[5][5] == VAZIA) i += 7;
+    if (e.grelha[5][6] == VAZIA) i +=-4;
+    if (e.grelha[5][7] == VAZIA) i +=-8;
+    if (e.grelha[6][0] == VAZIA) i +=-8;
+    if (e.grelha[6][1] == VAZIA) i +=-24;
+    if (e.grelha[6][2] == VAZIA) i +=-4;
+    if (e.grelha[6][3] == VAZIA) i +=-3;
+    if (e.grelha[6][4] == VAZIA) i +=-3;
+    if (e.grelha[6][5] == VAZIA) i +=-4;
+    if (e.grelha[6][6] == VAZIA) i +=-24;
+    if (e.grelha[6][7] == VAZIA) i +=-8;
+    if (e.grelha[7][0] == VAZIA) i +=99;
+    if (e.grelha[7][1] == VAZIA) i +=-8;
+    if (e.grelha[7][2] == VAZIA) i += 8;
+    if (e.grelha[7][3] == VAZIA) i += 6;
+    if (e.grelha[7][4] == VAZIA) i += 6;
+    if (e.grelha[7][5] == VAZIA) i += 8;
+    if (e.grelha[7][6] == VAZIA) i +=-8;
+    if (e.grelha[7][7] == VAZIA) i +=99;
+    return i;
+}
+
+ESTADO botdificil (ESTADO e) {
+    int i, j, a = 0, b = 0;
+    int valor = 0, valor2 = 0;
+    valor = avaliaTab(e);
+    if (passar(e)==0){
+        printf("Sem Jogadas.Passou a vez.");
+        e.peca=inv[e.peca];
+        e=jogador(e);
+    }
+
+    else {
+        printf("tenho %d jogaddas",passar(e));
+
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+                if (validar(e, i, j) != 0) {
+                    e.grelha[i][j] = e.peca;
+                    valor2 = avaliaTab(e);
+                    if (valor2 < valor) {
+                        a = i;
+                        b = j;
+                        valor = valor2;
+
+                    }
+                    e.grelha[i][j] = VAZIA;
+                }
+            }
+        }
+        e = joga(e, a, b);
+        printa(e);
+        contador(e);
+        printf("\n\nO Bot jogou na posicao %d %d\n", a + 1, b + 1);
+        e = jogador(e);
+
+    }
+
+
+    return e;
+
+}
+
 ESTADO dificil (ESTADO e, char c2){
+    if (c2=='X') e=botdificil(e);
+    if (c2=='O') e=jogador(e);
     return e;
 }
+
 
 ESTADO bot (ESTADO e, char c2, int c3) {
     // dependendo do nível selecionado pela pessoa, vai a cada auxiliar; é smp acompanhado pela peça que a pessoa
     // selecionou para o bot
 
-    if (c3==1)  e=facil(e,c2);
-    else if (c3==2) e=medio(e,c2);
-    else if (c3==3) e=dificil(e,c2);
+    if (c3==1) {e.modo=1;
+        e=facil(e,c2);}
+    else if (c3==2){e.modo=2;
+        e=medio(e,c2); }
+    else if (c3==3){e.modo=3;
+        e=dificil(e,c2); }
     else printf("Nível Inválido\n");
 
     return e;
 }
+
+
+void push (ESTADO e){
+    struct Node* temp;
+    temp = malloc(sizeof(struct Node));
+    temp->estado = e;
+    temp->prox = top;
+    top = temp;
+}
+
+
+void pop(){
+    struct Node* temp;
+    temp = top;
+    top = top->prox;
+    free(temp);
+}
+
+
+
+ESTADO undo(){
+    struct Node* temp;
+    if (top == NULL) {
+        printf("\nStack vazia");
+    }
+    else {
+        temp = top;
+        ESTADO e = temp->estado;
+        if (e.modo==0) {
+            if (e.peca == VALOR_X) {
+                e.peca = VALOR_O;
+                printf("\nM O\n");
+            }
+            else if (e.peca == VALOR_O) {
+                e.peca = VALOR_X;
+                printf("\nM X\n");
+            }
+        }
+        else if (e.modo!=0){
+            if (e.peca == VALOR_X) {
+                if(e.modo==1) printf("\nA X 1\n");
+                else if(e.modo==2) printf("\nA X 2\n");
+                else if(e.modo==3) printf("\nA X 3\n");
+            }
+            else if (e.peca == VALOR_O) {
+                if(e.modo==1) printf("\nA O 1\n");
+                else if(e.modo==2) printf("\nA O 2\n");
+                else if(e.modo==3) printf("\nA O 3\n");
+            }
+
+        }
+        printa(temp->estado);
+        contador(temp->estado);
+    }
+    return temp->estado;
+}
+
+
 
