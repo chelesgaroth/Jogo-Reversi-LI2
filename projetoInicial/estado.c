@@ -959,31 +959,28 @@ int avaliaTab (ESTADO e) {
     return i;
 }
 
-ESTADO botdificil (ESTADO e) {
-    int i, j, a = 0, b = 0;
-    int valor = 0, valor2 = 0;
-    valor = avaliaTab(e);
-    if (passar(e)==0){
-        printf("Sem Jogadas.Passou a vez.");
-        e.peca=inv[e.peca];
-        e=jogador(e);
+ESTADO botdificil (ESTADO e){
+    if (acabou (e)==1) {
+        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
+        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
+        else printf ("Empate!");
+        return e;
     }
-
-    else {
-        printf("tenho %d jogaddas",passar(e));
-
+    if (passar(e)!=0) {
+        int i, j;
+        ESTADO f;
+        int curr = 0, min = 9999;
+        int a, b;
         for (i = 0; i < 8; i++) {
             for (j = 0; j < 8; j++) {
                 if (validar(e, i, j) != 0) {
-                    e.grelha[i][j] = e.peca;
-                    valor2 = avaliaTab(e);
-                    if (valor2 < valor) {
+                    f = joga(e, i, j);
+                    curr = avaliaTab(f);
+                    if (min > curr) {
+                        min = curr;
                         a = i;
                         b = j;
-                        valor = valor2;
-
                     }
-                    e.grelha[i][j] = VAZIA;
                 }
             }
         }
@@ -992,11 +989,8 @@ ESTADO botdificil (ESTADO e) {
         contador(e);
         printf("\n\nO Bot jogou na posicao %d %d\n", a + 1, b + 1);
         e = jogador(e);
-
     }
-
-
-    return e;
+        return e;
 
 }
 
