@@ -659,7 +659,28 @@ ESTADO sugestao (ESTADO e){
     printarmos(e);
     return e;
 }
-void help (ESTADO e) {}
+void help (ESTADO e) {
+    int i, j;
+    int curr = 0, min = 9999;
+    int a=0, b=0;
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            if (validar(e, i, j) != 0) {
+                e.grelha[i][j]=VALOR_O;
+                curr = avaliaTab(e);
+                e.grelha[i][j]=VAZIA;
+                if (min > curr) {
+                    min = curr;
+                    a = i;
+                    b = j;
+                }
+            }
+        }
+    }
+    e.grelha[a][b]=VALOR_help;
+    printa (e);
+    printf("Help: Posição %d %d", (a+1),(b+1));
+}
 
 
 int menu () {
