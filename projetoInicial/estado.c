@@ -17,6 +17,10 @@ void printa(ESTADO e)
         printf("%d ",linhas);
         for (int j = 0; j < 8; j++) {
             switch (e.grelha[i][j]) {
+                case VALOR_help: {
+                    c = '?';
+                    break;
+                }
                 case VALOR_O: {
                     c = 'O';
                     break;
