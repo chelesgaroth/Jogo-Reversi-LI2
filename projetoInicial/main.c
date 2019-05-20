@@ -36,9 +36,9 @@ void comandos () {
                     e = joga(e, x - 1, y - 1);
                     printa(e);
                     if (acabou(e) == 1) {
-                        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
-                        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
-                        else printf("Empate!");
+                        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!\n");
+                        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!\n");
+                        else printf("Empate!\n");
                     }
                 }
                 else { //se o e.modo for automatico
@@ -46,7 +46,6 @@ void comandos () {
                     if (validar(e, x - 1, y - 1) != 0) {
                         e = joga(e, x - 1, y - 1);
                         printa(e);
-                        contador(e);
                         if (e.modo == 1) e = botfacil(e);
                         else if (e.modo == 2) e = botmedio(e);
                         else if (e.modo == 3) e = botdificil(e);
