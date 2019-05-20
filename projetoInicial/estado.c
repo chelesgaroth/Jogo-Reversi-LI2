@@ -6,41 +6,90 @@
 
 const VALOR inv[] = {VAZIA,VALOR_O,VALOR_X};
 
-void printa(ESTADO e)
-{
+void printa(ESTADO e) {
     char c = ' ';
-    printf("\n  1 2 3 4 5 6 7 8\n");
-    int linhas=1;
+    char modo,nivel,jogador;
+    int linhas = 1;
 
-
-    for (int i = 0; i < 8; i++) {
-        printf("%d ",linhas);
-        for (int j = 0; j < 8; j++) {
-            switch (e.grelha[i][j]) {
-                case VALOR_help: {
-                    c = '?';
-                    break;
+ //sempre que printa o estado resultante de uma jogada irá verificar se o jogador atual pode jogar antes de escolher um comando
+    if (passar(e) == 0){
+        printf("\n  1 2 3 4 5 6 7 8\n");
+        for (int i = 0; i < 8; i++) {
+            printf("%d ", linhas);
+            for (int j = 0; j < 8; j++) {
+                switch (e.grelha[i][j]) {
+                    case VALOR_help: {
+                        c = '?';
+                        break;
+                    }
+                    case VALOR_O: {
+                        c = 'O';
+                        break;
+                    }
+                    case VALOR_X: {
+                        c = 'X';
+                        break;
+                    }
+                    case VAZIA: {
+                        c = '-';
+                        break;
+                    }
                 }
-                case VALOR_O: {
-                    c = 'O';
-                    break;
-                }
-                case VALOR_X: {
-                    c = 'X';
-                    break;
-                }
-                case VAZIA: {
-                    c = '-';
-                    break;
-                }
+                printf("%c ", c);
             }
-            printf("%c ", c);
-        }
-        linhas++;
+            linhas++;
 
-        printf("\n");
+            printf("\n");
+        }
+        contador(e);
+        printf("Sem Jogadas.Passou a vez.\n\n");
+        e.peca=inv[e.peca];
+        e.fim=0; // acabou a sua vez de jogar
+        if (e.modo==0) {modo= 'M'; nivel='-';}
+        else if(e.modo==1) {nivel= '1'; modo='A';}
+        else if(e.modo==2) {nivel='2';modo='A';}
+        else if(e.modo==3) {nivel='3';modo='A';}
+        if (e.peca == VALOR_X) jogador= 'X';
+        else if (e.peca == VALOR_O) jogador='O';
+        printf ("%c %c %c\n",modo,jogador,nivel);
     }
 
+    printf("\n  1 2 3 4 5 6 7 8\n");
+    linhas = 1;
+    for (int i = 0; i < 8; i++) {
+        printf("%d ", linhas);
+        for (int j = 0; j < 8; j++) {
+                switch (e.grelha[i][j]) {
+                    case VALOR_help: {
+                        c = '?';
+                        break;
+                    }
+                    case VALOR_O: {
+                        c = 'O';
+                        break;
+                    }
+                    case VALOR_X: {
+                        c = 'X';
+                        break;
+                    }
+                    case VAZIA: {
+                        c = '-';
+                        break;
+                    }
+                }
+                printf("%c ", c);
+            }
+            linhas++;
+
+            printf("\n");
+        }
+    contador(e);
+
+    if (e.fim == 0) {
+        if (e.modo == 1) botfacil(e);
+        else if (e.modo == 2) botmedio(e);
+        else if (e.modo == 3) botdificil(e);
+    }
 }
 
 ESTADO inicia (ESTADO e, VALOR v){
@@ -66,30 +115,31 @@ ESTADO valida(ESTADO e,int l,int c) {
     int deixa = 0;
     int deixa1=0,deixa2=0,deixa3=0,deixa4=0,deixa5=0,deixa6=0,deixa7=0,deixa8=0;
     int posc = 0;
-    if (e.grelha [l][c] == VAZIA) {
-        // Este
+    if (e.grelha [l][c] == VAZIA) { // nesta linha verificamos se a posicao onde queremos jogar é uma posicao vazia;
+
+        // Este     : aqui procuramos de na direcao este existe uma peca igual à nossa;
         int i = l, j = c + 1;
         if (e.grelha[l][c+1]!=e.peca) {
-            while ((j <= 7) && (e.grelha[i][j] != e.peca)) { j++; }
-            posc = j;
-            if ((j <= 7) && (e.grelha[i][j] == e.peca)) {
-                j--;
-                deixa1 = 1;
-                while ((j != c) && (deixa1 == 1)) {
+            while ((j <= 7) && (e.grelha[i][j] != e.peca)) { j++; }  // o ciclo para se encontrarmos uma peca igual caso contrario so para quando chegarmos ao fim do tabuleiro
+            posc = j; //vamos guardar j numa variavel que sera usada mais a frente
+            if ((j <= 7) && (e.grelha[i][j] == e.peca)) { // este if serve para verificar se saimos do ciclo anterior pq encontramos uma peca igual à nossa e nao pq acabou o tabuleiro
+                j--; // se a condicao se verificar vamos andar uma posicao para tras para verificar se esta nova posicao é uma inv[e.peca]
+                deixa1 = 1; //pode jogar
+                while ((j != c) && (deixa1 == 1)) { //neste ciclo nos andamos para tras ate chegarmos à posicao c e ao mesmo tempo verificamos se as pecas sao pecas inversas , se isto se verificar o deixa é 1 , se o deixa for 0 pq estas condicoes nao se verificam entao sai imediatamente do ciclo
                     if ((e.grelha[i][j] != e.peca) && (e.grelha[i][j] != VAZIA)) deixa1 = 1;
                     else deixa1 = 0;
                     j--;
                 }
             }
-            if (deixa1 == 1) {
-                while (j != posc) {
+            if (deixa1 == 1) { //se l c for uma jogada valida nesta direcao ou seja se deixa1=1 entao podemos trocar todas as pecas ate à primeira peca igual a nossa nesta direcao
+                while (j != posc) { //posc é a variavel em que nos guardamos anteriormente a  posicao onde encontramos a primeira peca igual a nossa nesta direcao
                     if (e.peca == VALOR_O) e.grelha[l][j] = VALOR_O;
                     else if (e.peca == VALOR_X) e.grelha[l][j] = VALOR_X;
                     j++;
                 }
             }
         }
-        else deixa1=0;
+        else deixa1=0;  // se as condicoes anteriores nao se verificarem entao nao troca as pecas e deixa1=0
 
 
         // Oeste
@@ -318,36 +368,32 @@ ESTADO joga (ESTADO e, int x, int y) {
     // independentemente do modo, a funcao avalia se é permitido jogar naquela posição com recurso à função valida
     // troca a peça no final da jogada, para permitir que o outro jogador tenha a sua peça em jogo
 
-    if (e.modo==0) {
-        e = valida(e,x,y);
+    if (e.modo == 0) {
+        e = valida(e, x, y);
         if (e.peca == VALOR_X) {
             e.peca = VALOR_O;
             printf("\nM O\n");
-        }
-        else if (e.peca == VALOR_O) {
+        } else if (e.peca == VALOR_O) {
             e.peca = VALOR_X;
             printf("\nM X\n");
         }
-    }
-    else if (e.modo!=0){
-
-        e=valida(e,x ,y);
+    } else if (e.modo != 0) {
+        e = valida(e, x, y);
         if (e.peca == VALOR_X) {
             e.peca = VALOR_O;
-            if(e.modo==1) printf("\nA O 1\n");
-            else if(e.modo==2) printf("\nA O 2\n");
-            else if(e.modo==3) printf("\nA O 3\n");
-        }
-        else if (e.peca == VALOR_O) {
+            if (e.modo == 1) printf("\nA O 1\n");
+            else if (e.modo == 2) printf("\nA O 2\n");
+            else if (e.modo == 3) printf("\nA O 3\n");
+        } else if (e.peca == VALOR_O) {
             e.peca = VALOR_X;
-            if(e.modo==1) printf("\nA X 1\n");
-            else if(e.modo==2) printf("\nA X 2\n");
-            else if(e.modo==3) printf("\nA X 3\n");
+            if (e.modo == 1) printf("\nA X 1\n");
+            else if (e.modo == 2) printf("\nA X 2\n");
+            else if (e.modo == 3) printf("\nA X 3\n");
         }
-
     }
     return e;
 }
+
 
 
 
@@ -364,7 +410,6 @@ ESTADO anula (ESTADO e){
 
 ESTADO load (ESTADO e,char c1[]) {
     char c;
-    char linha[50];
     char t1,t2,t3;
     int i = 0, j = 0;
     FILE *tabuleiro;
@@ -372,18 +417,17 @@ ESTADO load (ESTADO e,char c1[]) {
     e=anula(e);
     tabuleiro = fopen(c1, "r");
 
-
     // 1º linha
     fscanf(tabuleiro,"%c %c %c",&t1,&t2,&t3);
-    if (t1=='M') e.modo=0;
-    else if(t3=='1') e.modo=1;
-    else if(t3=='2') e.modo=2;
-    else if(t3=='3') e.modo=3;
+    if ((t1=='M')&&(t3=='-')) e.modo=0;
+    else if((t1=='A')&&(t3=='1')) e.modo=1;
+    else if((t1=='A')&&(t3=='2')) e.modo=2;
+    else if((t1=='A')&&(t3=='3')) e.modo=3;
     e.peca = (t2 == 'X' ? VALOR_X : VALOR_O);
-    printf ("%c %c\n",t1, t2);
+    printf ("%c %c %c\n",t1,t2,t3);
 
     for (i=0;i<8;i++) {
-        for (j = 1; j < 9; j++) {
+        for (j = 0; j < 8; j++) {
 
             fscanf(tabuleiro, "%s ", &c);
             switch (c) {
@@ -414,13 +458,17 @@ ESTADO load (ESTADO e,char c1[]) {
 void save (ESTADO e,char c1[])
 {
     int i,j;
-    char modo,jogador ;
+    char modo,nivel,jogador ;
     char c = ' ';
     FILE *fPointer;
     fPointer = fopen(c1,"w");
-    modo= (e.modo == 0 ? 'M' : 'A');
-    jogador = (e.peca == VALOR_X ? 'X' : 'O');
-    fprintf (fPointer,"%c %c\n",modo,jogador);
+    if (e.modo==0) {modo= 'M'; nivel='-';}
+    else if(e.modo==1) {nivel= '1'; modo='A';}
+    else if(e.modo==2) {nivel='2';modo='A';}
+    else if(e.modo==3) {nivel='3';modo='A';}
+    if (e.peca == VALOR_X) jogador= 'X';
+    else if (e.peca == VALOR_O) jogador='O';
+    fprintf (fPointer,"%c %c %c\n",modo,jogador,nivel);
     for (i=0;i<8;i++) {
         for (j=0;j<8;j++) {
             switch(e.grelha[i][j]) {
@@ -447,7 +495,7 @@ void save (ESTADO e,char c1[])
 // Esta função diz-nos se é possível jogar na posiçao linha l e coluna c ; >= 1 é possível ; =0 nao é possível ;
 
 int validar(ESTADO e,int l,int c) {
-    int numero=0;
+
     int deixa = 0;
     if(e.grelha[l][c]== VAZIA) {
         int deixa1 = 0;
@@ -644,8 +692,8 @@ void printarmos(ESTADO e){
 
 ESTADO sugestao (ESTADO e){
     if(e.modo==0){
-    if (e.peca == VALOR_O) printf("\nM O\n");
-    else if (e.peca == VALOR_X) printf("\nM X\n");
+        if (e.peca == VALOR_O) printf("\nM O\n");
+        else if (e.peca == VALOR_X) printf("\nM X\n");
     }
     else if (e.modo!=0){
         if (e.peca == VALOR_X) {
@@ -780,25 +828,28 @@ ESTADO botfacil (ESTADO e) {
     // Função onde o bot joga, estratégia: percorre todos as posições, a primeira onde for valido jogar, efetua a jogada
     // e sai do ciclo, ou seja, passa a vez ao jogador;
     if (passar(e)!=0) {
-
         int i, j;
         for (i = 0; i < 8; i++) {
             for (j = 0; j < 8; j++) {
                 if (validar(e, i, j) != 0) {
                     e = joga(e, i, j);
                     printa(e);
-                    contador(e);
-                    printf("\n\nO Bot jogou na posicao %d %d\n", i + 1, j + 1);
+                    if (acabou(e) == 1) {
+                        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
+                        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
+                        else printf("Empate!");
+                    }
+                    else {
+                        printf("\n\nO Bot jogou na posicao %d %d\n", i + 1, j + 1);
+                        e = jogador(e);
+                    }
                     i = 8;
                     j = 8;
-
-
                 }
             }
         }
-        e = jogador(e);
     }
-    else {
+    else if ((passar(e)==0)&&(acabou(e)!=1)){
         printf("Sem Jogadas.Passou a vez.");
         e.peca=inv[e.peca];
         jogador(e);
@@ -844,36 +895,9 @@ int contadorO (ESTADO e) {
 
 }
 
-/*int maispecas (ESTADO e) {
-    ESTADO f;
-    int i,j;
-    int curr=0, max=0;
-
-    for (i = 0; i < 8; i++) {
-        for (j = 0; j < 8; j++) {
-            if (validar(e, i, j) != 0) {
-                f=valida(e,i,j);
-                if (e.peca==VALOR_X)
-                    curr= contadorX(f)-contadorX(e)-1;
-                if (e.peca==VALOR_O)
-                    curr= contadorO(f)-contadorO(e)-1;
-                if (curr>max) max=curr;
-            }
-        }
-    }
-    printf("%d",max);
-    return max;
-}
-*/
-
 ESTADO botmedio (ESTADO e) {
-    if (acabou (e)==1) {
-        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
-        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
-        else printf ("Empate!");
-        return e;
-    }
-    if (passar(e)!=0) {
+    if (passar(e) != 0) {
+        e.fim = 1; //ainda esta a jogar
         ESTADO f;
         int i, j, a = 0, b = 0;
         int curr = 0, max = 0;
@@ -896,16 +920,16 @@ ESTADO botmedio (ESTADO e) {
         }
         e = joga(e, a, b);
         printa(e);
-        contador(e);
-        printf("\n\nO Bot jogou na posicao %d %d\n", a + 1, b + 1);
-        e = jogador(e);
+        if (acabou(e) == 1) {
+            if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
+            else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
+            else printf("Empate!");
+        } else {
+            printf("\n\nO Bot jogou na posicao %d %d\n", a + 1, b + 1);
+            e = jogador(e);
+        }
+        return e;
     }
-    else if ((passar(e)==0)&& (acabou!=1)){
-        printf("Sem Jogadas.Passou a vez.");
-        e.peca=inv[e.peca];
-        jogador(e);
-    }
-    return e;
 }
 
 
@@ -985,37 +1009,39 @@ int avaliaTab (ESTADO e) {
 }
 
 ESTADO botdificil (ESTADO e){
-    if (acabou (e)==1) {
-        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
-        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
-        else printf ("Empate!");
-        return e;
-    }
-    if (passar(e)!=0) {
-        int i, j;
-        ESTADO f;
-        int curr = 0, min = 9999;
-        int a, b;
-        for (i = 0; i < 8; i++) {
-            for (j = 0; j < 8; j++) {
-                if (validar(e, i, j) != 0) {
-                    f = joga(e, i, j);
-                    curr = avaliaTab(f);
-                    if (min > curr) {
-                        min = curr;
-                        a = i;
-                        b = j;
+        if (passar(e) != 0) {
+            e.fim=1;
+            int i, j;
+            ESTADO f;
+            int curr = 0, min = 9999;
+            int a = 0, b = 0;
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+                    if (validar(e, i, j) != 0) {
+                        f = valida(e, i, j);
+                        curr = avaliaTab(f);
+                        if (min > curr) {
+                            min = curr;
+                            a = i;
+                            b = j;
+                        }
                     }
                 }
             }
+            e = joga(e, a, b);
+            printa(e);
+            if (acabou (e)==1) {
+                if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!\n");
+                else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!\n");
+                else printf ("Empate!\n");
+            }
+            else {
+                printf("\n\nO Bot jogou na posicao %d %d\n", a + 1, b + 1);
+                e = jogador(e);
+            }
         }
-        e = joga(e, a, b);
-        printa(e);
-        contador(e);
-        printf("\n\nO Bot jogou na posicao %d %d\n", a + 1, b + 1);
-        e = jogador(e);
-    }
-        return e;
+
+    return e;
 
 }
 
