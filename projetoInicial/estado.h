@@ -20,6 +20,7 @@ typedef struct estado {
     VALOR peca; // peça do jogador que vai jogar!
     VALOR grelha[8][8];
     char modo; // modo em que se está a jogar! 0-> manual, 1-> contra computador nivel 1 , 2 -> nivel 2 , 3-> nivel 3
+    char fim; // 0 acabou a sua vez ........ 1 ainda esta a jogar;
 } ESTADO;
 
 
@@ -46,7 +47,6 @@ ESTADO botfacil (ESTADO e);
 int menu ();
 ESTADO anula (ESTADO e);
 ESTADO botmedio (ESTADO e);
-int maispecas (ESTADO e);
 int contadorX (ESTADO e);
 int contadorO (ESTADO e);
 ESTADO botdificil (ESTADO e);
