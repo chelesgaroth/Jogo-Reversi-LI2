@@ -423,6 +423,7 @@ ESTADO load (ESTADO e,char c1[]) {
     else if((t1=='A')&&(t3=='1')) e.modo=1;
     else if((t1=='A')&&(t3=='2')) e.modo=2;
     else if((t1=='A')&&(t3=='3')) e.modo=3;
+    else printf("tabuleiro nao valido");
     e.peca = (t2 == 'X' ? VALOR_X : VALOR_O);
     printf ("%c %c %c\n",t1,t2,t3);
 
