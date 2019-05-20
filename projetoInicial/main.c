@@ -13,6 +13,7 @@ void comandos () {
     do{fgets(linha,50,stdin);
         switch (toupper(linha [0])){
             case 'N': {
+                e.fim=1;
                 e.modo=0;
                 sscanf(linha, "%c %c",&c1,&c2);
                 if (c2=='X'){
@@ -25,46 +26,25 @@ void comandos () {
                     e = inicia (e,VALOR_O);
                 }
                 printa(e);
-                contador (e);
                 push(e);
                 break;
             }
             case 'J' : {
                 // permite efetuar uma jogada tanto em modo 1 ou 0;
-                printf("tenho %d jogadas 2",passar(e));
                 sscanf(linha,"%c %d %d", &c1 ,&x ,&y);
+
                 if (acabou (e)==1) {
                     if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
                     else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
                     else printf ("Empate!");
-
                 }
                 else {
-                    if (e.modo == 0) {
-                        if (passar(e)!=0) {
+                        if (e.modo == 0) {
                             e = joga(e, x - 1, y - 1);
                             printa(e);
-                            contador(e);
                         }
-                        else {
-                            printf("Sem Jogadas.Passou a vez.");
-                            if (e.peca==VALOR_X)e.peca=VALOR_O;
-                            else if(e.peca==VALOR_O)e.peca=VALOR_X;
-                        }
-                    }
-                    else if (e.modo != 0) {
-                        printf("tenho %d jogadas",passar(e));
-                        // se for "permitido" jogar naquela posição, irá jogar, printar o tabuleiro e passar a jogada ao bot
-                        if (passar(e) == 0) {
-                            printf("Sem Jogadas.Passou a vez.");
-                            if (e.peca == VALOR_X) e.peca = VALOR_O;
-                            else if (e.peca == VALOR_O)e.peca = VALOR_X;
 
-                            if (e.modo == 1) botfacil(e);
-                            else if (e.modo == 2) botmedio(e);
-                            else if (e.modo == 3) botdificil(e);
-
-                        } else {
+                        else { //se o e.modo for automatico
 
                             if (validar(e, x - 1, y - 1) != 0) {
                                 e = joga(e, x - 1, y - 1);
@@ -73,20 +53,15 @@ void comandos () {
                                 if (e.modo == 1) e = botfacil(e);
                                 else if (e.modo == 2) e = botmedio(e);
                                 else if (e.modo == 3) e = botdificil(e);
-                            } else {
+                            }
+                            else {
                                 // se nao for "permitido" jogar, imprime no ecrã uma mensagem para o jogador voltar a jogar: NÃO VAI À
                                 // FUNÇÂO JOGA
-                                jogador(e);
-
                                 if (e.peca == VALOR_X) printf("Try again X\n");
                                 else if (e.peca == VALOR_O) printf("Try again O\n");
-
-
                             }
                         }
                     }
-                    }
-
 
                 push(e);
                 break;
@@ -102,7 +77,6 @@ void comandos () {
                 sscanf (linha,"%c %s", &c1,nome);
                 e=load(e,nome);
                 printa(e);
-                contador(e);
                 break;
             }
 
