@@ -8,22 +8,22 @@ void comandos () {
     ESTADO e = {0};
 
     char linha[50];
-    char c1,c2,nome[40];
-    int x,y,c3;
-    do{fgets(linha,50,stdin);
-        switch (toupper(linha [0])){
+    char c1, c2, nome[40];
+    int x, y, c3;
+    do {
+        fgets(linha, 50, stdin);
+        switch (toupper(linha[0])) {
             case 'N': {
-                e.fim=1;
-                e.modo=0;
-                sscanf(linha, "%c %c",&c1,&c2);
-                if (c2=='X'){
+                e.fim = 1;
+                e.modo = 0;
+                sscanf(linha, "%c %c", &c1, &c2);
+                if (c2 == 'X') {
                     printf("M X\n");
-                    e = inicia(e,VALOR_X);
+                    e = inicia(e, VALOR_X);
 
-                }
-                else if (c2 == 'O'){
+                } else if (c2 == 'O') {
                     printf("M O\n");
-                    e = inicia (e,VALOR_O);
+                    e = inicia(e, VALOR_O);
                 }
                 printa(e);
                 push(e);
@@ -31,41 +31,37 @@ void comandos () {
             }
             case 'J' : {
                 // permite efetuar uma jogada tanto em modo 1 ou 0;
-                sscanf(linha,"%c %d %d", &c1 ,&x ,&y);
-
-                if (acabou (e)==1) {
-                    if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
-                    else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
-                    else printf ("Empate!");
-                }
-                else {
-                        if (e.modo == 0) {
-                            e = joga(e, x - 1, y - 1);
-                            printa(e);
-                        }
-
-                        else { //se o e.modo for automatico
-
-                            if (validar(e, x - 1, y - 1) != 0) {
-                                e = joga(e, x - 1, y - 1);
-                                printa(e);
-                                contador(e);
-                                if (e.modo == 1) e = botfacil(e);
-                                else if (e.modo == 2) e = botmedio(e);
-                                else if (e.modo == 3) e = botdificil(e);
-                            }
-                            else {
-                                // se nao for "permitido" jogar, imprime no ecrã uma mensagem para o jogador voltar a jogar: NÃO VAI À
-                                // FUNÇÂO JOGA
-                                if (e.peca == VALOR_X) printf("Try again X\n");
-                                else if (e.peca == VALOR_O) printf("Try again O\n");
-                            }
-                        }
+                sscanf(linha, "%c %d %d", &c1, &x, &y);
+                if (e.modo == 0) {
+                    e = joga(e, x - 1, y - 1);
+                    printa(e);
+                    if (acabou(e) == 1) {
+                        if (contadorX(e) > contadorO(e)) printf("Jogo acabou! Vencedor: X!");
+                        else if (contadorX(e) < contadorO(e)) printf("Jogo acabou! Vencedor: O!");
+                        else printf("Empate!");
                     }
+                }
+                else { //se o e.modo for automatico
+
+                    if (validar(e, x - 1, y - 1) != 0) {
+                        e = joga(e, x - 1, y - 1);
+                        printa(e);
+                        contador(e);
+                        if (e.modo == 1) e = botfacil(e);
+                        else if (e.modo == 2) e = botmedio(e);
+                        else if (e.modo == 3) e = botdificil(e);
+                    } else {
+                        // se nao for "permitido" jogar, imprime no ecrã uma mensagem para o jogador voltar a jogar: NÃO VAI À
+                        // FUNÇÂO JOGA
+                        if (e.peca == VALOR_X) printf("Try again X\n");
+                        else if (e.peca == VALOR_O) printf("Try again O\n");
+                    }
+                }
 
                 push(e);
                 break;
-            }
+        }
+
             case 'Q' :
                 break;
             case 'U': {
